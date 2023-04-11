@@ -172,10 +172,19 @@ button {
 }
 
 .attribution {
-    margin-top: 2rem;
+    padding-bottom: 2rem;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-@media (min-width: 1240px){
+.attribution p, .attribution a {
+    text-decoration: none;
+    color: black;
+}
+
+@media screen and (min-width: 1240px){
     main {
         display: flex;
         gap: 5rem;
@@ -271,6 +280,9 @@ button {
         width: 88px;
     }
 
+    .attribution {
+        padding: 2rem;
+    }
 }
 
 
