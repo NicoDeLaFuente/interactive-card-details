@@ -147,6 +147,7 @@ button {
     color: white;
     font-size: 18px;
     margin-top: 1rem;
+    cursor:pointer;
 }
 
 .div__error{
@@ -182,6 +183,18 @@ button {
 .attribution p, .attribution a {
     text-decoration: none;
     color: black;
+}
+
+.message__success {
+    padding: 1rem;
+    color: green; 
+    text-align: center;
+}
+
+.message__fail {
+    padding: 1rem;
+    color: red;
+    text-align: center;
 }
 
 @media screen and (min-width: 1240px){

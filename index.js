@@ -16,107 +16,104 @@ const cvc = document.querySelector("#cvc")
 const cvcError = document.querySelector("#error__cvc")
 const cvcEditCard = document.querySelector("#card__cvc")
 
-// principal function
-function cardDetails (element, conditional) {
-  element.addEventListener("blur", (e) => {
-    const tag = e.target;
-    const value = e.currentTarget.value
+const form = document.querySelector("#form")
+const inputs = document.querySelectorAll("#form input")
 
-    conditional(value, tag);
-  })
-  
+const regex = {
+  name: /^[a-zA-Z\s]{6,30}$/,
+  number: /^(?:\d[ -]*?){13,16}/gm,
+  month: /^(0?[1-9]|1[0-2])$/, 
+  year: /^([2-3])\d$/,
+  cvc: /^\d\d\d$/
+}
+
+const fields = {
+  name: false,
+  number: false, 
+  month: false, 
+  year: false, 
+  cvc: false
+}
+
+const validarFormulario = (e) => {
+  switch (e.target.name) {
+    case "name":
+      validarInput(regex.name, e.target.value, nameCard, nameError, e.target.name, nameEditCard);
+    break;
+    case "number":
+      validarInput(regex.number, e.target.value, numberCard, numberError, e.target.name, numberEditCard);
+    break;
+    case "month":
+      validarInput(regex.month, e.target.value, monthDateCard, dateError, e.target.name, monthEditCard)
+    break;
+    case "year":
+      validarInput(regex.year, e.target.value, yearDateCard, dateError, e.target.name, yearEditcard)
+    break;
+    case "cvc":
+      validarInput(regex.cvc, e.target.value, cvc, cvcError, e.target.name, cvcEditCard) 
+    break;
+  }
 
 }
 
-
-// conditional name
-const nameCardConditional = (value, tag) => {
-  const error = nameError
-  if (value.trim().length === 0) {
-    tag.classList.remove("correct")
-    tag.classList.add("error")
-    error.textContent = "Please enter your credit card name";
-  } else if (value.trim().length < 3) {
-    tag.classList.remove("correct")
-    tag.classList.add("error")
-    error.textContent = "Your name should have at least three letters"
-  } else if (value.trim().length > 20) {
-    tag.classList.remove("correct")
-    tag.classList.add("error")
-    error.textContent = "Your name should not have more than 20 letters"
-  } else {
+const validarInput = (regex, event, tag, error, name, cardEdit) => {
+  if (regex.test(event)) {
     error.textContent = "";
     tag.classList.remove("error")
     tag.classList.add("correct")
-    nameEditCard.textContent = value;
-  }
-
-  
-}
-
-// conditional number
-const numberCardConditional = (value, tag) => {
-  const error = numberError;
-  if (value < 1000000000000000 || value > 9999999999999999) {
-    tag.classList.remove("correct")
-    tag.classList.add("error")
-    error.textContent = "Enter a valid number. Must have 16 digits"
+    cardEdit.textContent = event
+    fields[name] = true;
   } else {
-    tag.classList.add("correct")
-    tag.classList.remove("error")
-    error.textContent = ""
-    numberEditCard.textContent = value
-  }
-}
-
-// conditional month date
-const monthDateCardConditional = (value, tag) => {
-  const error = dateError;
-  if(value <= 0 || value > 12) {
-    tag.classList.remove("correct")
-    tag.classList.add("error")
-    error.textContent = "Enter a valid date"
-  } else {
-    tag.classList.add("correct")
-    tag.classList.remove("error")
-    error.textContent = ""
-    monthEditCard.textContent = value
-  }
-}
-
-// conditional year date
-const yearDateCardConditional = (value, tag) => {
-  const error = dateError
-  if(value < 23 || value > 50) {
-    tag.classList.remove("correct")
-    tag.classList.add("error")
-    error.textContent = "Enter a valid date"
-  } else {
-    tag.classList.add("correct")
-    tag.classList.remove("error")
-    error.textContent = ""
-    yearEditcard.textContent= value;
-  }
-}
-
-//conditional cvc
-const cvcConditional = (value, tag) => {
-  const error = cvcError;
-  if (value <100 || value > 999) {
-    tag.classList.remove("correct");
+    error.textContent =  `Please enter your credit card ${name}`;
     tag.classList.add("error");
-    error.textContent = "Enter a valid CVC"
-  } else {
-    tag.classList.add("correct");
-    tag.classList.remove("error");
-    error.textContent = ""
-    cvcEditCard.textContent = value;
+    tag.classList.remove("correct")
+    fields[name] = false;
   }
-
 }
 
-cardDetails(nameCard, nameCardConditional)
-cardDetails(numberCard, numberCardConditional)
-cardDetails(monthDateCard, monthDateCardConditional)
-cardDetails(yearDateCard, yearDateCardConditional)
-cardDetails(cvc, cvcConditional)
+
+inputs.forEach(input => {
+  input.addEventListener("keyup", validarFormulario)
+  input.addEventListener("blur", validarFormulario)
+})
+
+
+
+
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+  if (fields.name && fields.number && fields.month && fields.year && fields.cvc) {
+    form.reset();
+    submitSuccess();
+    inputs.forEach(input => {
+      input.classList.remove("correct")
+    })
+  } else {
+    submitFail()
+  }
+
+})
+
+const submitSuccess = () => {
+  const message = document.querySelector("#message");
+  message.textContent = `El formulario se envío correctamente`;
+  message.classList.add("message__success");
+  message.classList.remove("message__fail");
+  setTimeout(() => {
+    message.textContent = ""
+    nameEditCard.textContent = "JANE APPLESEED"
+    numberEditCard.textContent = "0000 0000 0000 0000"
+    monthEditCard.textContent = "00"
+    yearEditcard.textContent = "00"
+    cvcEditCard.textContent = "000"
+  }, 5000)
+}
+
+const submitFail = () => {
+  const message = document.querySelector("#message");
+  message.textContent = `Por favor rellene todos los campos correctamente.`
+  message.classList.add("message__fail")
+  message.classList.remove("message__success")
+}

@@ -61,8 +61,8 @@
           <label class="date">
             <span>EXP. DATE MM/YY</span>
             <div class="date__inputs">
-              <input type="number" id="month__date" name="month__date" required placeholder="MM">
-              <input type="number" id="year__date" name="year__date" required placeholder="YY">
+              <input type="number" id="month__date" name="month" required placeholder="MM">
+              <input type="number" id="year__date" name="year" required placeholder="YY">
             </div>
             <span id="error__date" class="error__message"></span>
           </label>
@@ -73,7 +73,8 @@
           </label>
         </div>
 
-        <button>Confirm</button>
+        <button type="submit">Confirm</button>
+        <p id="message"></p>
       </form>
 
     </section>
